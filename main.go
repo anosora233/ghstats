@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"os"
 
 	"github.com/anosora233/ghstats/lib"
@@ -15,23 +14,25 @@ func main() {
 		Flags: []cli.Flag{
 			&cli.StringFlag{
 				Name:     "username",
+				Aliases:  []string{"u"},
 				Required: true,
 			},
 			&cli.StringFlag{
-				Name:     "repository",
-				Required: true,
+				Name:    "repository",
+				Aliases: []string{"r"},
 			},
 		},
 		Action: func(c *cli.Context) error {
 			username := c.String("username")
 			repository := c.String("repository")
-			lib.ShowReleases(username, repository)
+			if len(repository) == 0 {
+				lib.DisplayRepositories(username)
+			} else {
+				lib.DisplayReleases(username, repository)
+			}
 			return nil
 		},
 	}
 
-	err := app.Run(os.Args)
-	if err != nil {
-		log.Fatal(err)
-	}
+	app.Run(os.Args)
 }

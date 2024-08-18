@@ -1,5 +1,7 @@
 package lib
 
+const API = "https://api.github.com"
+
 type Error struct {
 	Message string `json:"message"`
 }
@@ -19,4 +21,11 @@ type Release struct {
 	Assets      []Asset `json:"assets"`
 	CreatedAt   string  `json:"created_at"`
 	PublishedAt string  `json:"published_at"`
+}
+
+type Repository struct {
+	Name      string `json:"name"`
+	PushedAt  string `json:"pushed_at"`
+	CreatedAt string `json:"created_at"`
+	UpdatedAt string `json:"updated_at"`
 }
