@@ -4,40 +4,40 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"os"
 
 	"github.com/fatih/color"
 )
 
-func GetResponse[T Release | Repository](url string) (result []T) {
+func GetResponse[T Release | Repository](url string, result *[]T) error {
 	resp, err := http.Get(url)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	defer resp.Body.Close()
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
-	err = json.Unmarshal(body, &result)
-	if err != nil {
+	if err := json.Unmarshal(body, &result); err != nil {
 		var message Error
-		err = json.Unmarshal(body, &message)
-		if err != nil {
-			log.Fatal(err)
+		if err := json.Unmarshal(body, &message); err != nil {
+			return err
 		}
-
-		color.Red("%s", message.Message)
-		os.Exit(1)
+		return fmt.Errorf("%s", message.Message)
 	}
-	return
+	return nil
 }
 
 func DisplayReleases(username string, repository string) {
+	var releases []Release
 	url := fmt.Sprintf("%s/repos/%s/%s/releases?per_page=128", API, username, repository)
-	releases := GetResponse[Release](url)
+	err := GetResponse(url, &releases)
+	if err != nil {
+		color.Red("%s", err)
+		os.Exit(1)
+	}
 
 	if len(releases) == 0 {
 		color.Red("No Releases")
@@ -74,8 +74,13 @@ func DisplayReleases(username string, repository string) {
 }
 
 func DisplayRepositories(username string) {
+	var repositories []Repository
 	url := fmt.Sprintf("%s/users/%s/repos", API, username)
-	repositories := GetResponse[Repository](url)
+	err := GetResponse(url, &repositories)
+	if err != nil {
+		color.Red("%s", err)
+		os.Exit(1)
+	}
 
 	for _, repository := range repositories {
 		color.Green("Repository Name: %s", repository.Name)
