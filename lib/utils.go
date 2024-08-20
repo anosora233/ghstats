@@ -8,6 +8,7 @@ import (
 	"os"
 
 	"github.com/fatih/color"
+	"github.com/savioxavier/termlink"
 )
 
 func GetResponse[T Release | Repository](url string, result *[]T) error {
@@ -48,11 +49,11 @@ func DisplayReleases(username string, repository string) {
 	for i := range releases {
 		release := releases[len(releases)-i-1]
 
-		color.Magenta("Release Name: %s", release.Name)
+		color.Magenta("Release Name: %s", termlink.Link(release.Name, release.Url))
 		color.Green("Release Info")
+		color.Cyan("Release Author: %s", termlink.Link(release.Author.Name, release.Author.Url))
 		color.Cyan("Created at: %s", release.CreatedAt)
 		color.Cyan("Published at: %s", release.PublishedAt)
-		color.Cyan("Release Author: %s", release.Author.Name)
 
 		if len(release.Assets) != 0 {
 			color.Green("Download Info")
@@ -60,7 +61,7 @@ func DisplayReleases(username string, repository string) {
 			var assetsDownloads int
 			for _, asset := range release.Assets {
 				assetsDownloads += asset.Downloads
-				color.Cyan("%s (%d download tally)", asset.Name, asset.Downloads)
+				color.Cyan("%s (%d download tally)", termlink.Link(asset.Name, asset.Url), asset.Downloads)
 			}
 
 			releasesDownloads += assetsDownloads
@@ -83,7 +84,7 @@ func DisplayRepositories(username string) {
 	}
 
 	for _, repository := range repositories {
-		color.Green("Repository Name: %s", repository.Name)
+		color.Green("Repository Name: %s", termlink.Link(repository.Name, repository.Url))
 		color.Cyan("Pushed at: %s", repository.PushedAt)
 		color.Cyan("Created at: %s", repository.CreatedAt)
 		color.Cyan("Updated at: %s", repository.UpdatedAt)

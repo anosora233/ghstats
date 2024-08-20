@@ -4,6 +4,7 @@ go 1.23.0
 
 require (
 	github.com/fatih/color v1.17.0
+	github.com/savioxavier/termlink v1.4.0
 	github.com/urfave/cli/v2 v2.27.4
 )
 
