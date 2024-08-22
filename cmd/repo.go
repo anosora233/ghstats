@@ -10,12 +10,10 @@ func init() {
 }
 
 var repoCmd = &cobra.Command{
-	Use:   "repo",
+	Use:   "repo <user>",
+	Args:  cobra.ExactArgs(1),
 	Short: "Show repositories of the user",
-	PreRun: func(cmd *cobra.Command, args []string) {
-		rootCmd.MarkPersistentFlagRequired("username")
-	},
 	Run: func(cmd *cobra.Command, args []string) {
-		pkg.DisplayRepositories(username)
+		pkg.DisplayRepositories(args[0])
 	},
 }

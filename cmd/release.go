@@ -10,13 +10,10 @@ func init() {
 }
 
 var releaseCmd = &cobra.Command{
-	Use:   "release",
+	Use:   "release <user> <repo>",
+	Args:  cobra.ExactArgs(2),
 	Short: "Show releases of the repository",
-	PreRun: func(cmd *cobra.Command, args []string) {
-		rootCmd.MarkPersistentFlagRequired("username")
-		rootCmd.MarkPersistentFlagRequired("repository")
-	},
 	Run: func(cmd *cobra.Command, args []string) {
-		pkg.DisplayReleases(username, repository)
+		pkg.DisplayReleases(args[0], args[1])
 	},
 }
