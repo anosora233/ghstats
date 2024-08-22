@@ -1,4 +1,4 @@
-package lib
+package pkg
 
 const API = "https://api.github.com"
 
